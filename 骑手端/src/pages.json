@@ -1,0 +1,105 @@
+{
+	"pages": [
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "首页"
+			}
+		},
+		{
+			"path": "pages/my/my",
+			"style": {
+				"navigationBarTitleText": "我的"
+			}
+		},
+		{
+			"path": "pages/category/category",
+			"style": {
+				"navigationBarTitleText": "订单"
+			}
+		},
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		},
+		{
+			"path": "pages/pagesRider/profile",
+			"style": {
+				"navigationBarTitleText": "骑手个人信息页"
+			}
+		},
+		{
+			"path": "pages/pagesRider/setting",
+			"style": {
+				"navigationBarTitleText": "骑手设置页"
+			}
+		},
+		{
+			"path": "pages/pagesRider/detail",
+			"style": {
+				"navigationBarTitleText": "订单详细"
+			}
+		},
+		{
+			"path": "pages/pagesRider/list",
+			"style": {
+				"navigationBarTitleText": "订单页面"
+			}
+		},
+		{
+			"path": "pages/pagesRider/finish",
+			"style": {
+				"navigationBarTitleText": "完成送达"
+			}
+		},
+		{
+			"path": "pages/pagesRider/income",
+			"style": {
+				"navigationBarTitleText": "收益中心"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar": {
+		"color": "#333",
+		"selectedColor": "#27ba9b",
+		"backgroundColor": "#fff",
+		"borderStyle": "white",
+		"list": [
+			{
+				"text": "首页",
+				"pagePath": "pages/index/index",
+				"iconPath": "static/tabs/home_default.png",
+				"selectedIconPath": "static/tabs/home_selected.png"
+			},
+			{
+				"text": "订单",
+				"pagePath": "pages/category/category",
+				"iconPath": "static/tabs/category_default.png",
+				"selectedIconPath": "static/tabs/category_selected.png"
+			},
+			{
+				"text": "我的",
+				"pagePath": "pages/my/my",
+				"iconPath": "static/tabs/user_default.png",
+				"selectedIconPath": "static/tabs/user_selected.png"
+			}
+		]
+	},
+
+	"permission": {
+		"scope.userLocation": {
+			"desc": "用于骑手配送时获取位置"
+		}
+	},
+	"requiredBackgroundModes": [
+		"location"
+	]
+}
