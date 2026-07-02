@@ -1,0 +1,38 @@
+/* 前台类目 - 一行5个布局 */
+.category {
+  margin: 10rpx 0 0;
+  padding: 20rpx 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around; /* 关键：均匀分布，左右留白一致 */
+  gap: 10rpx 0; /* 上下行间距 */
+  min-height: auto;
+  width: 100%;
+  box-sizing: border-box;
+
+  .category-item {
+    /* 一行5个：100%宽度 ÷ 5 = 20%，完美等分 */
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 10rpx 0;
+
+    .icon {
+      width: 100rpx;
+      height: 100rpx;
+      object-fit: contain;
+      margin-bottom: 8rpx;
+    }
+    .text {
+      font-size: 26rpx;
+      color: #333;
+      line-height: 1.2;
+      /* 文字居中，避免长名称换行错位 */
+      text-align: center;
+      word-break: break-all;
+    }
+  }
+}
