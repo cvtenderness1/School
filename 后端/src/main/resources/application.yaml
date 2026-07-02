@@ -1,0 +1,39 @@
+server:
+  ip: localhost
+  port: 1000
+spring:
+  main:
+    allow-circular-references: true #允许循环引用
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/run_errands?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 168800
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 1000MB
+  jackson:
+    date-format: "yyyy-MM-dd HH:mm:ss"
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: Asia/Shanghai
+
+  mvc:
+    throw-exception-if-no-handler-found: true  # 找不到接口就抛出异常
+  web:
+    resources:
+      add-mappings: false  # 关闭静态资源映射，让404正常生效
+
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    root: info
+    com.project.platform: debug
+
+resetPassword: 123456

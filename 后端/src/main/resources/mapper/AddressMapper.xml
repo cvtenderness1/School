@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.AddressMapper">
+
+    <select id="list" resultType="com.project.platform.entity.Address">
+        SELECT * FROM address
+        WHERE user_id = #{userId}
+        ORDER BY is_default DESC, create_time DESC
+    </select>
+
+    <insert id="insert" parameterType="com.project.platform.entity.Address">
+        INSERT INTO address (
+        user_id, receiver, contact, province_code, city_code, county_code,
+        address, full_location, is_default, create_time,
+        lat, lng
+        ) VALUES (
+        #{userId}, #{receiver}, #{contact}, #{provinceCode}, #{cityCode}, #{countyCode},
+        #{address}, #{fullLocation}, #{isDefault}, NOW(),
+        #{lat}, #{lng}
+        )
+    </insert>
+
+    <select id="selectById" resultType="com.project.platform.entity.Address">
+        SELECT * FROM address WHERE id = #{id}
+    </select>
+
+    <update id="updateById" parameterType="com.project.platform.entity.Address">
+        UPDATE address
+        <set>
+            <if test="receiver != null">receiver = #{receiver},</if>
+            <if test="contact != null">contact = #{contact},</if>
+            <if test="provinceCode != null">province_code = #{provinceCode},</if>
+            <if test="cityCode != null">city_code = #{cityCode},</if>
+            <if test="countyCode != null">county_code = #{countyCode},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="fullLocation != null">full_location = #{fullLocation},</if>
+            <if test="isDefault != null">is_default = #{isDefault},</if>
+            <if test="lat != null">lat = #{lat},</if>
+            <if test="lng != null">lng = #{lng},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM address WHERE id = #{id}
+    </delete>
+
+    <update id="cancelDefault">
+        UPDATE address SET is_default = 0 WHERE user_id = #{userId}
+    </update>
+
+</mapper>

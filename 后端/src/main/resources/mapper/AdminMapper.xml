@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.AdminMapper">
+
+        <select id="list" resultType="com.project.platform.entity.Admin">
+        select * from admin
+        <where>
+           <if test="username !=null">username like concat('%',#{username},'%')</if>
+        </where>
+        order by id desc
+    </select>
+
+
+    <sql id="queryConditions">
+        <where>
+            <if test="query.username != null and query.username.trim() != ''">
+                AND admin.username LIKE CONCAT('%', #{query.username}, '%')
+            </if>
+            <if test="query.tel != null and query.tel.trim()  != ''">
+                AND admin.tel LIKE CONCAT('%', #{query.tel}, '%')
+            </if>
+            <if test="query.roles != null and query.roles.trim()  != ''">
+                AND admin.roles=#{query.roles}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="insert" parameterType="com.project.platform.entity.Admin" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `admin`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null">username,</if>
+            <if test="password != null">password,</if>
+            <if test="nickname != null">nickname,</if>
+            <if test="avatarUrl != null">avatar_url,</if>
+            <if test="tel != null">tel,</if>
+            <if test="email != null">email,</if>
+            <if test="roles != null">roles,</if>
+            <if test="address != null">address,</if>
+            <if test="status != null">status,</if>
+            <if test="age != null">age,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null">#{username},</if>
+            <if test="password != null">#{password},</if>
+            <if test="nickname != null">#{nickname},</if>
+            <if test="avatarUrl != null">#{avatarUrl},</if>
+            <if test="tel != null">#{tel},</if>
+            <if test="email != null">#{email},</if>
+            <if test="roles != null">#{roles},</if>
+            <if test="address != null">#{address},</if>
+            <if test="status != null">#{status},</if>
+            <if test="age != null">#{age},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.project.platform.entity.Admin">
+        UPDATE admin
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="nickname != null">
+                nickname = #{nickname},
+            </if>
+            <if test="avatarUrl != null">
+                avatar_url = #{avatarUrl},
+            </if>
+            <if test="tel != null">
+                tel = #{tel},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="roles != null">
+                roles = #{roles},
+            </if>
+            <if test="address != null">
+                address = #{address},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+
+    <!-- 根据ID列表删除 -->
+    <delete id="removeByIds">
+        DELETE FROM admin
+        WHERE id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
+

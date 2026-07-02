@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.CommentMapper">
+
+    <insert id="insertComment" useGeneratedKeys="true" keyProperty="commentId">
+        INSERT INTO comment (order_id, user_id, merchant_id, rider_id, score, content, create_time)
+        VALUES (#{orderId}, #{userId}, #{merchantId}, #{riderId}, #{score}, #{content}, NOW())
+    </insert>
+
+    <select id="selectByOrderId" resultType="com.project.platform.entity.Comment">
+        SELECT * FROM comment WHERE order_id = #{orderId}
+    </select>
+
+    <select id="countByOrderId" resultType="int">
+        SELECT COUNT(1) FROM comment WHERE order_id = #{orderId}
+    </select>
+    <select id="selectByMerchantId" resultType="com.project.platform.entity.Comment">
+        SELECT * FROM comment
+        WHERE merchant_id = #{merchantId}
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>

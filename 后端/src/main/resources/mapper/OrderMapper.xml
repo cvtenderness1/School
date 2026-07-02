@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.platform.mapper.OrderMapper">
+
+    <select id="list" resultType="com.project.platform.entity.OrderMaster">
+        select * from order_master
+        <where>
+            <if test="deliveryId != null">and delivery_id = #{deliveryId}</if>
+            <if test="orderType != null">and order_type = #{orderType}</if>
+            <if test="orderStatus != null">and order_status = #{orderStatus}</if>
+            <if test="orderId != null and orderId != ''">and order_id like concat('%',#{orderId},'%')</if>
+        </where>
+        order by create_time desc
+    </select>
+    <select id="getById" resultType="com.project.platform.entity.OrderMaster">
+        select * from order_master
+        <where>
+            <if test="orderId != null and orderId != ''">and order_id = #{orderId}</if>
+        </where>
+    </select>
+    <!-- 更新订单（指派骑手/取消订单用） -->
+    <update id="updateById">
+        update order_master
+        <set>
+            <if test="orderStatus != null">order_status = #{orderStatus},</if>
+            <if test="deliveryId != null">delivery_id = #{deliveryId},</if>
+            <if test="payTime != null">pay_time = #{payTime},</if>
+            <if test="finishTime != null">finish_time = #{finishTime},</if>
+            <if test="finishImg != null">finish_img = #{finishImg},</if>
+        </set>
+        where order_id = #{orderId}
+    </update>
+    <update id="grabOrder">
+        UPDATE order_master
+        SET delivery_id = #{riderId},
+            order_status = 2
+        WHERE order_id = #{orderId}
+          AND order_status = 1
+          AND delivery_id IS NULL
+    </update>
+    <insert id="insert">
+        INSERT INTO order_master (
+            order_id, user_id, merchant_id, address_id,
+            order_type, total_amount, delivery_fee, note, order_status,
+            pay_type, pay_channel, post_fee, pay_money,mainOrderNo,delivery_time_type
+        )
+        VALUES (
+                   #{orderId}, #{userId}, #{merchantId}, #{addressId},
+                   #{orderType}, #{totalAmount}, #{deliveryFee}, #{note}, #{orderStatus},
+                   #{payType}, #{payChannel}, #{postFee}, #{payMoney}, #{mainOrderNo},
+                   #{deliveryTimeType}
+               )
+    </insert>
+    <select id="selectById" resultType="com.project.platform.entity.OrderMaster">
+        select * from order_master where order_id = #{id}
+    </select>
+    <select id="selectBymin" resultType="com.project.platform.entity.OrderMaster">
+        SELECT * FROM order_master
+        WHERE mainOrderNo = #{mainOrderNo}
+    </select>
+    <select id="selectByUserIdAndState" resultType="com.project.platform.entity.OrderMaster">
+        SELECT * FROM order_master
+        WHERE user_id = #{userId}
+        <if test="orderState != null">
+            AND order_status = #{orderState}
+        </if>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="findDeliveringOrdersByRider" resultType="com.project.platform.entity.OrderMaster">
+        SELECT * FROM order_master
+        WHERE order_status = 3
+          AND delivery_id = #{riderId}
+    </select>
+    <select id="selectGrabNearby" resultType="com.project.platform.entity.OrderMaster">
+        SELECT * FROM order_master
+        WHERE order_status = 1
+          AND delivery_id IS NULL
+    </select>
+    <!-- 批量删除订单 -->
+    <delete id="removeByIds">
+        DELETE FROM order_master WHERE order_id IN
+        <foreach collection="list" item="orderId" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>
+    </delete>
+
+
+    <!-- 按时间范围 统计骑手已完成订单 -->
+    <select id="selectRiderFinishOrder" resultType="java.util.Map">
+        SELECT
+            om.delivery_id AS riderId,
+            COUNT(om.order_id) AS orderNum,
+            SUM(om.pay_money) AS totalAmount
+        FROM order_master om
+        WHERE om.order_status IN (4,6)
+          AND om.pay_time BETWEEN #{startDate} AND #{endDate}
+          AND om.delivery_id IS NOT NULL
+        GROUP BY om.delivery_id
+    </select>
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.PeakPriceMapper">
+
+    <select id="list" resultType="com.project.platform.entity.PeakPrice">
+        SELECT * FROM peak_price
+        WHERE merchant_id = #{merchantId}
+        ORDER BY id DESC
+    </select>
+
+    <insert id="insert" parameterType="com.project.platform.entity.PeakPrice">
+        INSERT INTO peak_price(merchant_id, name, time_range, week_days, rate, status)
+        VALUES (#{merchantId}, #{name}, #{timeRange}, #{weekDays}, #{rate}, #{status})
+    </insert>
+
+    <update id="update" parameterType="com.project.platform.entity.PeakPrice">
+        UPDATE peak_price
+        SET name=#{name},
+            time_range=#{timeRange},
+            week_days=#{weekDays},
+            rate=#{rate},
+            status=#{status}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        DELETE FROM peak_price WHERE id=#{id}
+    </delete>
+
+</mapper>

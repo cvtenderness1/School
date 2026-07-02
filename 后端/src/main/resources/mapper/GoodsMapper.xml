@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.platform.mapper.GoodsMapper">
+
+    <!-- 新增商品 -->
+    <insert id="add" useGeneratedKeys="true" keyProperty="goodsId">
+        INSERT INTO goods (merchant_id, category_id, goods_name, price, discount_price, img, stock, status, `desc`)
+        VALUES (#{merchantId}, #{categoryId}, #{goodsName}, #{price}, #{discountPrice}, #{img}, #{stock}, #{status}, #{desc})
+    </insert>
+
+    <!-- 条件查询列表（支持按商家、分类、商品名筛选） -->
+    <select id="list" resultType="com.project.platform.entity.good">
+        SELECT * FROM goods
+        <where>
+            <if test="goodsId != null">
+                AND goods_id = #{goodsId}
+            </if>
+            <if test="merchantId != null">
+                AND merchant_id = #{merchantId}
+            </if>
+            <if test="categoryId != null">
+                AND category_id = #{categoryId}
+            </if>
+            <if test="goodsName != null and goodsName != ''">
+                AND goods_name LIKE CONCAT('%', #{goodsName}, '%')
+            </if>
+        </where>
+        ORDER BY goods_id DESC
+    </select>
+    <!-- 根据ID修改 -->
+    <update id="updateById">
+        UPDATE goods
+        <set>
+            <if test="goodsName != null">goods_name = #{goodsName},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="discountPrice != null">discount_price = #{discountPrice},</if>
+            <if test="img != null">img = #{img},</if>
+            <if test="stock != null">stock = #{stock},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="desc != null">`desc` = #{desc}</if>
+        </set>
+        WHERE goods_id = #{goodsId}
+    </update>
+    <update id="updateStock" parameterType="com.project.platform.entity.good">
+        update goods
+        set stock = #{stock}
+        where goods_id = #{goodsId}
+    </update>
+
+    <!-- 根据ID删除 -->
+    <delete id="removeById">
+        DELETE FROM goods WHERE goods_id = #{id}
+    </delete>
+
+    <!-- 批量删除 -->
+    <delete id="removeByIds">
+        DELETE FROM goods WHERE goods_id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectAll" resultType="com.project.platform.entity.good">
+        SELECT * FROM goods ORDER BY goods_id DESC
+    </select>
+
+
+</mapper>

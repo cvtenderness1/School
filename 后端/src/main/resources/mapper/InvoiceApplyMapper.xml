@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.InvoiceApplyMapper">
+
+    <insert id="insertInvoice">
+        insert into invoice_apply
+        (invoice_no,apply_type,target_id,
+        <if test="riderName != null and riderName != ''">
+            rider_name,
+        </if>
+        settle_no,invoice_amount,
+        invoice_title,tax_no,status,create_time,update_time,order_id)
+        values
+        (#{invoiceNo},#{applyType},#{targetId},
+        <if test="riderName != null and riderName != ''">
+            #{riderName},
+        </if>
+        #{settleNo},#{invoiceAmount},
+        #{invoiceTitle},#{taxNo},#{status},#{createTime},#{updateTime},#{orderId})
+    </insert>
+
+    <delete id="deleteById"> delete from invoice_apply where id = #{id}</delete>
+
+    <select id="selectList" resultType="com.project.platform.entity.InvoiceApply">
+        SELECT
+        ia.*,
+        CASE
+        WHEN ia.apply_type = 2 THEN r.name
+        WHEN ia.apply_type = 1 THEN IFNULL(u.nickname, u.username)
+        ELSE ''
+        END AS riderName
+        FROM invoice_apply ia
+        LEFT JOIN rider r
+        ON ia.apply_type = 2 AND ia.target_id = r.rider_id
+        LEFT JOIN `user` u
+        ON ia.apply_type = 1 AND ia.target_id = u.id
+        <where>
+            <if test="status != -1">
+                and ia.status = #{status}
+            </if>
+        </where>
+        ORDER BY ia.create_time DESC
+    </select>
+
+    <update id="updateInvoiceStatus">
+        update invoice_apply
+        set status = #{status},update_time = now()
+        where id = #{id}
+    </update>
+
+</mapper>

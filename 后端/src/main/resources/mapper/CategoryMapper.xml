@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.CategoryMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="categoryId">
+        INSERT INTO category (merchant_id, category_name, sort)
+        VALUES (#{merchantId}, #{categoryName}, #{sort})
+    </insert>
+
+    <select id="findById" resultType="com.project.platform.entity.Category">
+        SELECT *
+        FROM category
+        WHERE merchant_id = #{merchantId}
+    </select>
+
+    <select id="findAllDistinctCategoryName" resultType="java.util.Map">
+        SELECT DISTINCT category_id, category_name FROM category
+    </select>
+
+    <select id="findByMerchantId" resultType="com.project.platform.entity.Category">
+        SELECT * FROM category WHERE merchant_id = #{merchantId}
+    </select>
+    <update id="updateById">
+        UPDATE category
+        <set>
+            <if test="categoryName != null and categoryName != ''">
+                category_name = #{categoryName},
+            </if>
+            <if test="sort != null">
+                sort = #{sort}
+            </if>
+        </set>
+        WHERE merchant_id = #{merchantId}
+    </update>
+</mapper>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.UserMapper">
+
+    <select id="list" resultType="com.project.platform.entity.User">
+        SELECT * FROM `user`
+        <where>
+            <if test="username != null and username != ''">
+                username LIKE CONCAT('%', #{username}, '%')
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
+
+    <sql id="queryConditions">
+        <where>
+            <if test="query.username != null and query.username.trim() != ''">
+                AND `user`.username LIKE CONCAT('%', #{query.username}, '%')
+            </if>
+            <if test="query.tel != null and query.tel.trim() != ''">
+                AND `user`.tel LIKE CONCAT('%', #{query.tel}, '%')
+            </if>
+            <if test="query.status != null and query.status.trim() != ''">
+                AND `user`.status = #{query.status}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="insert" parameterType="com.project.platform.entity.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `user`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null">username,</if>
+            <if test="password != null">password,</if>
+            <if test="nickname != null">nickname,</if>
+            <if test="avatarUrl != null">avatar_url,</if>
+            <if test="tel != null">tel,</if>
+            <if test="email != null">email,</if>
+            <if test="status != null">status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="address !=null">address,</if>
+            <!-- 新增字段 -->
+            <if test="gender != null">gender,</if>
+            <if test="birthday != null">birthday,</if>
+            <if test="provinceCode != null">province_code,</if>
+            <if test="cityCode != null">city_code,</if>
+            <if test="countyCode != null">county_code,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null">#{username},</if>
+            <if test="password != null">#{password},</if>
+            <if test="nickname != null">#{nickname},</if>
+            <if test="avatarUrl != null">#{avatarUrl},</if>
+            <if test="tel != null">#{tel},</if>
+            <if test="email != null">#{email},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="address !=null">#{address},</if>
+            <!-- 新增字段 -->
+            <if test="gender != null">#{gender},</if>
+            <if test="birthday != null">#{birthday},</if>
+            <if test="provinceCode != null">#{provinceCode},</if>
+            <if test="cityCode != null">#{cityCode},</if>
+            <if test="countyCode != null">#{countyCode},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.project.platform.entity.User">
+        UPDATE `user`
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="nickname != null">
+                nickname = #{nickname},
+            </if>
+            <if test="avatarUrl != null">
+                avatar_url = #{avatarUrl},
+            </if>
+            <if test="tel != null">
+                tel = #{tel},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="address != null">
+                address = #{address},
+            </if>
+            <!-- 新增字段 -->
+            <if test="gender != null">
+                gender = #{gender},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday},
+            </if>
+            <if test="provinceCode != null">
+                province_code = #{provinceCode},
+            </if>
+            <if test="cityCode != null">
+                city_code = #{cityCode},
+            </if>
+            <if test="countyCode != null">
+                county_code = #{countyCode},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="removeByIds">
+        DELETE FROM `user`
+        WHERE id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

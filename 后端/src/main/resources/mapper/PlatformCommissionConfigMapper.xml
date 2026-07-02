@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.PlatformCommissionConfigMapper">
+
+    <select id="selectAll" resultType="com.project.platform.entity.PlatformCommissionConfig">
+        select * from platform_commission_config
+    </select>
+
+    <select id="selectByType" resultType="com.project.platform.entity.PlatformCommissionConfig">
+        select * from platform_commission_config
+        where order_type = #{orderType}
+    </select>
+
+    <update id="updateConfig">
+        update platform_commission_config
+        set commission_rate = #{commissionRate},update_time = now()
+        where id = #{id}
+    </update>
+
+</mapper>

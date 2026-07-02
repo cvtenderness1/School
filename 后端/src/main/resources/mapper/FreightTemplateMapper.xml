@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.FreightTemplateMapper">
+
+    <select id="list" resultType="com.project.platform.entity.FreightTemplate">
+        SELECT * FROM freight_template
+        WHERE merchant_id = #{merchantId}
+        ORDER BY id DESC
+    </select>
+
+    <insert id="insert" parameterType="com.project.platform.entity.FreightTemplate">
+        INSERT INTO freight_template(merchant_id, name, base_price, base_distance, extra_price)
+        VALUES (#{merchantId}, #{name}, #{basePrice}, #{baseDistance}, #{extraPrice})
+    </insert>
+
+    <update id="update" parameterType="com.project.platform.entity.FreightTemplate">
+        UPDATE freight_template
+        SET name=#{name},
+            base_price=#{basePrice},
+            base_distance=#{baseDistance},
+            extra_price=#{extraPrice}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        DELETE FROM freight_template WHERE id=#{id}
+    </delete>
+
+</mapper>

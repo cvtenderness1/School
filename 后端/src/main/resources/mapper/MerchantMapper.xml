@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.platform.mapper.MerchantMapper">
+
+    <select id="list" resultType="com.project.platform.entity.Merchant">
+        SELECT m.* FROM merchant m
+        LEFT JOIN category c ON m.merchant_id = c.merchant_id
+        <where>
+            <if test="merchantName != null and merchantName != ''">
+                AND m.merchant_name LIKE CONCAT('%', #{merchantName}, '%')
+            </if>
+            <if test="status != null">
+                AND m.status = #{status}
+            </if>
+            <if test="categoryName != null and categoryName != ''">
+                AND c.category_name = #{categoryName}
+            </if>
+        </where>
+        ORDER BY m.merchant_id DESC
+    </select>
+    <select id="selectAll" resultType="com.project.platform.entity.Merchant">
+        SELECT * FROM merchant
+        WHERE status = 1
+        ORDER BY score DESC, merchant_id DESC
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="merchantId">
+        INSERT INTO merchant (user_id, merchant_name, cover_img, address, score, status, alt, lat, lng)
+        VALUES (#{userId}, #{merchantName}, #{coverImg}, #{address}, #{score}, #{status}, #{alt}, #{lat}, #{lng})
+    </insert>
+    <update id="updateById">
+        UPDATE merchant
+        <set>
+            <if test="merchantName != null"> merchant_name = #{merchantName}, </if>
+            <if test="coverImg != null"> cover_img = #{coverImg}, </if>
+            <if test="address != null"> address = #{address}, </if>
+            <if test="score != null"> score = #{score}, </if>
+            <if test="status != null"> status = #{status}, </if>
+            <if test="alt != null"> alt = #{alt}, </if>
+            <if test="lat != null"> lat = #{lat}, </if>
+            <if test="lng != null"> lng = #{lng} </if>
+        </set>
+        WHERE merchant_id = #{merchantId}
+    </update>
+
+    <delete id="removeByIds">
+        DELETE FROM merchant WHERE merchant_id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

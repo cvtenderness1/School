@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.RiderSettlementMapper">
+
+    <insert id="insertSettlement">
+        insert into rider_settlement
+        (settle_no,rider_id,settle_start,settle_end,total_order_num,
+         total_order_amount,platform_commission,rider_commission,status,create_time)
+        values
+            (#{settleNo},#{riderId},#{settleStart},#{settleEnd},#{totalOrderNum},
+             #{totalOrderAmount},#{platformCommission},#{riderCommission},#{status},#{createTime})
+    </insert>
+    <delete id="deleteByNo">
+        delete from rider_settlement where settle_no = #{settleNo}
+    </delete>
+
+    <select id="selectList" resultType="com.project.platform.entity.RiderSettlement">
+        SELECT
+        rs.*,
+        r.name AS riderName
+        FROM rider_settlement rs
+        LEFT JOIN rider r ON rs.rider_id = r.rider_id
+        <where>
+            <if test="status != -1">
+                and rs.status = #{status}
+            </if>
+        </where>
+        ORDER BY rs.create_time DESC
+    </select>
+    <select id="selectByNo" resultType="com.project.platform.entity.RiderSettlement">
+        select * from rider_settlement where settle_no = #{settleNo}
+    </select>
+
+    <update id="updateStatus">
+        update rider_settlement
+        set status = #{status},update_time = now()
+        where settle_no = #{settleNo}
+    </update>
+    <update id="updateToPaid">
+        UPDATE rider_settlement
+        SET status = 2,
+            update_time = NOW()
+        WHERE settle_no = #{settleNo}
+          AND status = 1
+    </update>
+</mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.DashboardMapper">
+
+    <!-- 1. 订单热力图：按日期统计订单数 -->
+    <select id="selectOrderCountByDate" resultType="java.util.Map">
+        SELECT
+            DATE(create_time) AS date,
+            COUNT(*) AS order_count
+        FROM order_master
+        WHERE create_time >= DATE_SUB(CURDATE(), INTERVAL #{days} DAY)
+        GROUP BY DATE(create_time)
+        ORDER BY date
+    </select>
+
+
+    <!-- 2. 骑手绩效排行榜-->
+    <select id="selectRiderPerformance" resultType="java.util.Map">
+        SELECT
+        r.rider_id,
+        r.name,
+        r.phone,
+        r.today_order_count,
+        r.credit_score,
+        COUNT(om.order_id) AS total_order_count,
+        IFNULL(ROUND(AVG(c.score), 1), 0) AS avg_score
+        FROM rider r
+        LEFT JOIN order_master om
+        ON r.rider_id = om.delivery_id
+        AND om.order_status IN (4,6)
+        LEFT JOIN comment c
+        ON c.order_id = LEFT(om.order_id, LOCATE('_', om.order_id)-1)  <!-- 关键：主订单匹配 -->
+        GROUP BY r.rider_id, r.name, r.phone, r.today_order_count, r.credit_score
+        ORDER BY total_order_count DESC, avg_score DESC
+        LIMIT 10
+    </select>
+
+    <!-- 3. 客诉/售后统计 -->
+    <select id="selectComplaintStats" resultType="java.util.Map">
+        SELECT
+            COUNT(*) AS total_after_sale,
+            SUM(CASE WHEN status = 0 THEN 1 ELSE 0 END) AS pending,
+            SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) AS completed,
+            (SELECT COUNT(*) FROM comment WHERE score &lt; 3) AS bad_comment_count
+        FROM after_sale
+    </select>
+
+    <!-- 4. 资金流水/营收统计 -->
+    <select id="selectFinanceFlow" resultType="java.util.Map">
+        SELECT
+            DATE(pay_time) AS date,
+            SUM(pay_money) AS daily_income,
+            SUM(delivery_fee) AS delivery_fee_income
+        FROM order_master
+        WHERE pay_time IS NOT NULL AND pay_time >= DATE_SUB(CURDATE(), INTERVAL #{days} DAY)
+        GROUP BY DATE(pay_time)
+        ORDER BY date
+    </select>
+
+    <!-- 5. 核心指标 -->
+    <select id="selectCoreMetrics" resultType="java.util.Map">
+        SELECT
+                (SELECT COUNT(*) FROM order_master) AS total_order,
+                (SELECT IFNULL(SUM(pay_money), 0) FROM order_master WHERE pay_time IS NOT NULL) AS total_income,
+                (SELECT COUNT(*) FROM after_sale WHERE status = 0) AS pending_complaint,
+                (SELECT COUNT(*) FROM rider WHERE work_status = 1) AS online_rider_count
+        FROM DUAL
+    </select>
+
+</mapper>

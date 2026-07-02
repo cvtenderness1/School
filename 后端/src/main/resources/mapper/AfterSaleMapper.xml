@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.AfterSaleMapper">
+
+    <insert id="insertAfterSale" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO after_sale (order_id, user_id, merchant_id, rider_id, type, reason, img_urls, status, create_time, update_time)
+        VALUES (#{orderId}, #{userId}, #{merchantId}, #{riderId}, #{type}, #{reason}, #{imgUrls}, #{status}, NOW(), NOW())
+    </insert>
+
+    <select id="selectByOrderId" resultType="com.project.platform.entity.AfterSale">
+        SELECT * FROM after_sale WHERE order_id = #{orderId}
+    </select>
+
+    <select id="selectByUserId" resultType="com.project.platform.entity.AfterSale">
+        SELECT * FROM after_sale WHERE user_id = #{userId} ORDER BY create_time DESC
+    </select>
+
+    <update id="updateStatus">
+        UPDATE after_sale SET status = #{status}, update_time = NOW() WHERE id = #{id}
+    </update>
+    <!-- 统计总数 -->
+    <select id="countTotal" resultType="int">
+        SELECT COUNT(*) FROM after_sale
+    </select>
+
+    <!-- 待处理数量 status=0 -->
+    <select id="countPending" resultType="int">
+        SELECT COUNT(*) FROM after_sale WHERE status = 0
+    </select>
+
+    <!-- 差评/投诉数量 type=3 -->
+    <select id="countBadComment" resultType="int">
+        SELECT COUNT(*) FROM after_sale WHERE type = 3
+    </select>
+
+    <!-- 待处理客诉列表 -->
+    <select id="selectPendingList" resultType="com.project.platform.entity.AfterSale">
+        SELECT * FROM after_sale WHERE status = 0 ORDER BY create_time DESC
+    </select>
+</mapper>
